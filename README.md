@@ -1,4 +1,4 @@
-# portfolio-worklog
+# portfolio-notes
 
 A small public worklog: short project notes that feed the microblog section of my portfolio site. Everything in this repository is public. Entries are written in English.
 
