@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 # Commit and push all changes to main. A push rebuilds the site, so this publishes.
 #
-#   scripts/publish.sh                 interactive: shows changes, asks, commits, pushes
-#   scripts/publish.sh "post: qaryz"   same, with your own commit message
-#   scripts/publish.sh -y              skip the confirmation
-#   scripts/publish.sh -n              dry run: show what would be published and stop
+#   _scripts/publish.sh                 interactive: shows changes, asks, commits, pushes
+#   _scripts/publish.sh "post: qaryz"   same, with your own commit message
+#   _scripts/publish.sh -y              skip the confirmation
+#   _scripts/publish.sh -n              dry run: show what would be published and stop
 set -euo pipefail
 
-cd "$(git rev-parse --show-toplevel)"
+# Always act on the repo this script lives in, wherever it is called from (e.g. via an alias)
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 yes=0; dry=0; message=""
 for arg in "$@"; do

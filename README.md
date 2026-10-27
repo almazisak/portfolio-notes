@@ -37,7 +37,7 @@ On the site each project is a feed: all of its posts, newest first, with the ful
 
 ## Publishing
 
-`scripts/publish.sh` shows the pending changes, asks for confirmation, then commits and pushes to `main`. A push rebuilds the site. Use `-n` for a dry run and `-y` to skip the question. The folder `scripts/` has no `index.md`, so the site ignores it.
+`_scripts/publish.sh` shows the pending changes, asks for confirmation, then commits and pushes to `main`. A push rebuilds the site. Use `-n` for a dry run and `-y` to skip the question. The folder `_scripts/` starts with `_`, so the site ignores it.
 
 ## Underscore rule
 
