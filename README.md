@@ -35,6 +35,10 @@ Entry (`YYYY-MM-DD-slug.md`):
 
 On the site each project is a feed: all of its posts, newest first, with the full text visible. Long posts are collapsed behind a "Read more" button. The date of a post links to its own page.
 
+## Publishing
+
+`scripts/publish.sh` shows the pending changes, asks for confirmation, then commits and pushes to `main`. A push rebuilds the site. Use `-n` for a dry run and `-y` to skip the question. The folder `scripts/` has no `index.md`, so the site ignores it.
+
 ## Underscore rule
 
 The site's content loader ignores any folder or file whose name starts with `_`.
