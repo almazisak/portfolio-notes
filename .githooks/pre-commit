@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# Blocks commits that could leak private data into this public repository.
+# Only staged changes are checked.
+
+HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+STOPWORDS="$HOOK_DIR/stopwords.local.txt"
+MAX_BYTES=$((1024 * 1024))
+fail=0
+
+block() { echo "BLOCKED: $1: $2" >&2; fail=1; }
+
+# Added/copied/modified/renamed files
+files=()
+while IFS= read -r -d '' f; do files+=("$f"); done \
+  < <(git diff --cached --name-only --diff-filter=ACMR -z)
+
+# 2. .obsidian must never be tracked
+for f in "${files[@]}"; do
+  case "$f" in
+    .obsidian|.obsidian/*|*/.obsidian/*) block "$f" "'.obsidian' must not be committed" ;;
+  esac
+done
+
+# 1. Stopwords in added lines
+if [ -f "$STOPWORDS" ]; then
+  while IFS= read -r word || [ -n "$word" ]; do
+    word="${word%$'\r'}"
+    [ -z "$word" ] && continue
+    case "$word" in \#*) continue ;; esac
+    for f in "${files[@]}"; do
+      if git diff --cached -U0 --no-color -- "$f" \
+        | grep -E '^\+' | grep -vE '^\+\+\+' | grep -qiF -- "$word"; then
+        block "$f" "contains a stopword from stopwords.local.txt"
+      fi
+    done
+  done < "$STOPWORDS"
+fi
+
+# 2. Wikilinks and absolute paths in added lines
+for f in "${files[@]}"; do
+  case "$f" in .githooks/*) continue ;; esac  # the hook itself contains these patterns
+  added="$(git diff --cached -U0 --no-color -- "$f" | grep -E '^\+' | grep -vE '^\+\+\+')"
+  [ -z "$added" ] && continue
+  grep -qF '[[' <<<"$added" && block "$f" "contains a wikilink '[[' (use relative Markdown links)"
+  grep -qF '/Users/' <<<"$added" && block "$f" "contains an absolute path '/Users/'"
+  grep -qF 'file://' <<<"$added" && block "$f" "contains a 'file://' path"
+done
+
+# 3. Size limit
+for f in "${files[@]}"; do
+  size="$(git cat-file -s ":$f" 2>/dev/null || echo 0)"
+  if [ "$size" -gt "$MAX_BYTES" ]; then
+    block "$f" "file is larger than 1 MB ($size bytes)"
+  fi
+done
+
+# 4. GPS tags in EXIF of staged images
+if command -v exiftool >/dev/null 2>&1; then
+  tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+  for f in "${files[@]}"; do
+    case "$(printf '%s' "$f" | tr '[:upper:]' '[:lower:]')" in
+      *.jpg|*.jpeg|*.png|*.heic|*.heif|*.tif|*.tiff|*.webp)
+        img="$tmp/$(basename "$f")"
+        git show ":$f" > "$img"
+        if [ -n "$(exiftool -s3 -gps:all "$img" 2>/dev/null)" ]; then
+          block "$f" "image contains GPS EXIF tags (strip with: exiftool -gps:all= \"$f\")"
+        fi
+        ;;
+    esac
+  done
+else
+  echo "WARNING: exiftool not installed, EXIF GPS check skipped (brew install exiftool)" >&2
+fi
+
+[ "$fail" -ne 0 ] && echo "Commit aborted." >&2
+exit "$fail"

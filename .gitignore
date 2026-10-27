@@ -1,0 +1,6 @@
+.obsidian/
+.trash/
+.DS_Store
+_drafts/*
+!_drafts/.gitkeep
+.githooks/stopwords.local.txt
