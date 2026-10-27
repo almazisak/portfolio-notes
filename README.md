@@ -7,10 +7,9 @@ A small public worklog: short project notes that feed the microblog section of m
 ```
 <project-name>/            kebab-case folder, one per project
   index.md                 project description
-  YYYY-MM-DD-slug.md       worklog entries
+  YYYY-MM-DD-slug.md       posts (the slug is optional: YYYY-MM-DD.md also works)
   assets/                  images for this project only
 _templates/                Obsidian templates (not published)
-_drafts/                   local drafts (not published, not tracked)
 ```
 
 ## Frontmatter
