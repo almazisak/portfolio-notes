@@ -30,7 +30,11 @@ Entry (`YYYY-MM-DD-slug.md`):
 | Field | Description |
 | --- | --- |
 | `date` | `YYYY-MM-DD` |
-| `title` | Entry title |
+| `title` | Optional. Heading of the post; leave empty for a short post without one |
+
+## How posts are shown
+
+On the site each project is a feed: all of its posts, newest first, with the full text visible. Long posts are collapsed behind a "Read more" button. The date of a post links to its own page.
 
 ## Underscore rule
 

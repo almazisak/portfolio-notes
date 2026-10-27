@@ -1,5 +1,5 @@
 ---
 date: {{date:YYYY-MM-DD}}
-title: 
+title:   # optional, leave empty for a short post without a heading
 ---
 
