@@ -25,9 +25,9 @@ Project (`index.md`):
 
 Entry (`YYYY-MM-DD-slug.md`):
 
-| Field | Description |
-| --- | --- |
-| `date` | `YYYY-MM-DD` |
+| Field   | Description                                                             |
+| ------- | ----------------------------------------------------------------------- |
+| `date`  | `YYYY-MM-DD`                                                            |
 | `title` | Optional. Heading of the post; leave empty for a short post without one |
 
 ## How posts are shown
