@@ -19,7 +19,6 @@ Project (`index.md`):
 | Field | Description |
 | --- | --- |
 | `title` | Project name |
-| `status` | `exploring`, `in progress` or `shipped` |
 | `cover` | Relative path to a cover image, e.g. `./assets/cover.jpg` |
 | `summary` | One-line description |
 | `case` | Optional link to a full case study |
